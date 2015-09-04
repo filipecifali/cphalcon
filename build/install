@@ -14,6 +14,17 @@
 #  Authors: Andres Gutierrez <andres@phalconphp.com>
 #            Eduar Carvajal <eduar@phalconphp.com>
 
+# Custom PHP Path need to be declared
+if [ -z $2 ]; then
+        PHPIZE=phpize
+        PHPCONFIG=''
+else
+        # Path w/o slash!
+        PHP_PREFIX=$2;
+        PHPIZE="${PHP_PREFIX}/bin/phpize"
+        PHPCONFIG="--with-php-config=${PHP_PREFIX}/bin/php-config"
+fi;
+
 # Check best compilation flags for GCC
 export CC="gcc"
 export CFLAGS="-march=native -mtune=native -O2 -fomit-frame-pointer"
@@ -57,8 +68,8 @@ cd $DIR
 #Clean current compilation
 if [ -f Makefile ]; then
 	make clean
-	phpize --clean
+	$PHPIZE --clean
 fi
 
 #Perform the compilation
-phpize && ./configure --enable-phalcon && make && make install && echo -e "\nThanks for compiling Phalcon!\nBuild succeed: Please restart your web server to complete the installation"
+$PHPIZE && ./configure $PHPCONFIG --enable-phalcon && make && make install && echo -e "\nThanks for compiling Phalcon!\nBuild succeed: Please restart your web server to complete the installation"
